@@ -1,4 +1,12 @@
 from random import randrange
+from os import system, name
+
+
+def clear():
+    if name == 'nt':
+        system('cls')
+    else:
+        system('clear')
 
 
 def nakresli_mapu(velikost, had, ovoce):
@@ -12,13 +20,13 @@ def nakresli_mapu(velikost, had, ovoce):
     for x in range(velikost[0]):
         for y in range(velikost[1]):
             if x == had[-1][0] and y == had[-1][1]:
-                print('o', end='')
+                print('o', end=' ')
             elif (x, y) in had:
-                print('x', end='')
+                print('x', end=' ')
             elif (x, y) in ovoce:
-                print('♫', end='')
+                print('♫', end=' ')
             else:
-                print('.', end='')
+                print('.', end=' ')
         print()
 
 
@@ -60,7 +68,7 @@ def pohyb(velikost, had, smer, ovoce):
 
 
 def ovoce_pole(ovoce, had, tah, velikost):
-    if len(ovoce) == 0 or tah % 30 == 0:
+    if len(ovoce) == 0 or tah % 10 == 0:
         while True:
             x = randrange(velikost[0])
             y = randrange(velikost[1])
@@ -95,16 +103,25 @@ Pro ukončení napiš Q -->  ''')
             return pismeno
 
 
-def hra():
+def vypis_intro():
     with open('snake.txt', encoding='utf-8') as napis:
         text = napis.read()
     print(text)
-    print()
+    input('Zmáčkni ENTER a pokračuj')
+
+
+def vypis_hru(velikost, had, ovoce):
+    clear()
     print('''Hrajeme hada, můžeš se posouvat na čtyři světové strany:
     W = ↑ (nahoru)
     S = ↓ (dolů)
     D = → (vpravo)
     A = ← (vlevo).''')
+    nakresli_mapu(velikost, had, ovoce)
+
+
+def hra():
+    vypis_intro()
 
     # Na začátku si nastavím výchozí mapu a vytisknu na obrazovku
     had = [(0, 0), (1, 0), (2, 0)]
@@ -112,7 +129,7 @@ def hra():
     tah = 1
     velikost = (15, 15)
     ovoce_pole(ovoce, had, tah, velikost)
-    nakresli_mapu(velikost, had, ovoce)
+    vypis_hru(velikost, had, ovoce)
 
     # pak samotná hra
     while True:
@@ -122,7 +139,7 @@ def hra():
             break
         pohyb(velikost, had, smer, ovoce)
         ovoce_pole(ovoce, had, tah, velikost)
-        nakresli_mapu(velikost, had, ovoce)
+        vypis_hru(velikost, had, ovoce)
         print('Had je dlouhý {} polí.'.format(len(had)))
         tah += 1
 
